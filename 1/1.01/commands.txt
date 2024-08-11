@@ -1,4 +1,3 @@
-k3d cluster create -a 2
 kubectl create deployment log-output --image=lauriil12/devopswithkubernetes:log_output
 kubectl get pods
 kubectl logs -f log-output-7c4f6967cd-nl2gn
