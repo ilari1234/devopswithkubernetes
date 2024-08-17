@@ -12,6 +12,17 @@ spec:
       labels:
         app: log-output
     spec:
+      volumes:
+        - name: shared-log
+          emptyDir: {}
       containers:
-        - name: log-output
-          image: lauriil12/devopswithkubernetes:log-output1.07
+        - name: log-output-reader
+          image: lauriil12/devopswithkubernetes:log-output-reader1.10.1
+          volumeMounts:
+            - name: shared-log
+              mountPath: /usr/src/app/logs
+        - name: log-output-writer
+          image: lauriil12/devopswithkubernetes:log-output-writer1.10
+          volumeMounts:
+            - name: shared-log
+              mountPath: /usr/src/app/logs
