@@ -4,26 +4,33 @@ metadata:
   name: log-output-ingress
 spec:
   rules:
-  - http:
-      paths:
-      - path: /status
-        pathType: Prefix
-        backend:
-          service:
-            name: log-output-svc
-            port:
-              number: 2345
-      - path: /log
-        pathType: Prefix
-        backend:
-          service:
-            name: log-output-svc
-            port:
-              number: 2345
-      - path: /pingpong
-        pathType: Prefix
-        backend:
-          service:
-            name: ping-pong-svc
-            port:
-              number: 2345
+    - http:
+        paths:
+          - path: /status
+            pathType: Prefix
+            backend:
+              service:
+                name: log-output-svc
+                port:
+                  number: 2345
+          - path: /timestamps
+            pathType: Prefix
+            backend:
+              service:
+                name: log-output-svc
+                port:
+                  number: 2345
+          - path: /log
+            pathType: Prefix
+            backend:
+              service:
+                name: log-output-svc
+                port:
+                  number: 2345
+          - path: /pingpong
+            pathType: Prefix
+            backend:
+              service:
+                name: ping-pong-svc
+                port:
+                  number: 2345
