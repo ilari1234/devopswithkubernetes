@@ -14,10 +14,11 @@ spec:
     spec:
       volumes:
         - name: shared-log
-          emptyDir: {}
+          persistentVolumeClaim:
+            claimName: ping-pong-claim
       containers:
         - name: log-output-reader
-          image: lauriil12/devopswithkubernetes:log-output-reader1.10.1
+          image: lauriil12/devopswithkubernetes:log-output-reader1.11
           volumeMounts:
             - name: shared-log
               mountPath: /usr/src/app/logs

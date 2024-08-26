@@ -12,6 +12,13 @@ spec:
       labels:
         app: ping-pong
     spec:
+      volumes:
+        - name: shared-log
+          persistentVolumeClaim:
+            claimName: ping-pong-claim
       containers:
         - name: ping-pong
-          image: lauriil12/devopswithkubernetes:ping-pong1.09
+          image: lauriil12/devopswithkubernetes:ping-pong1.11
+          volumeMounts:
+            - name: shared-log
+              mountPath: /usr/src/app/logs

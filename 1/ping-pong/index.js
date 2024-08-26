@@ -27,9 +27,21 @@ const logPing = (count) => {
   });
 };
 
+const updateCounter = () => {
+  if (fs.existsSync(pingfilePath)) {
+    fs.readFile(pingfilePath, "utf8", (err, data) => {
+      if (err) {
+        console.error(`Error reading file: ${err}`);
+      }
+      counter = parseInt(data.split(":")[1].trim());
+    });
+  }
+};
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server started in port ${PORT}`);
 });
 
 createLogDir();
+updateCounter();
