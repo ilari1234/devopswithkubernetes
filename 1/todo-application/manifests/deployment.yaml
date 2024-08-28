@@ -12,9 +12,20 @@ spec:
       labels:
         app: todo
     spec:
+      volumes:
+        - name: todo-volume
+          persistentVolumeClaim:
+            claimName: todo-claim
       containers:
         - name: todo
-          image: lauriil12/devopswithkubernetes:todo0.3
+          image: lauriil12/devopswithkubernetes:todo1.12
+          volumeMounts:
+            - name: todo-volume
+              mountPath: /usr/src/app/images
           env:
             - name: PORT
               value: "3001"
+            - name: IMAGEURL
+              value: "https://picsum.photos/1200"
+            - name: POLLINTERVAL
+              value: "3600000"
