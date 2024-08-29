@@ -48,7 +48,6 @@ const downloadImage = async (url, outputPath) => {
 
 
 app.get('/', (req, res) => {
-    const html = '<h1>Todo Application</h1> <img src="/imageFilePath" />'
     res.send(`<h1>Todo Application</h1> <img src="image.jpg" />`);
 })
 
