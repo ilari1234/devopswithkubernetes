@@ -18,7 +18,7 @@ spec:
             claimName: todo-claim
       containers:
         - name: todo
-          image: lauriil12/devopswithkubernetes:todo1.12
+          image: lauriil12/devopswithkubernetes:todo1.13
           volumeMounts:
             - name: todo-volume
               mountPath: /usr/src/app/images

@@ -4,6 +4,7 @@ const path = require('path');
 const express = require('express');
 const app = express();
 
+app.use(express.static('dist'))
 app.use(express.static('images'))
 
 const dirPath = path.join(__dirname, 'images')
@@ -47,9 +48,9 @@ const downloadImage = async (url, outputPath) => {
 
 
 
-app.get('/', (req, res) => {
-    res.send(`<h1>Todo Application</h1> <img src="image.jpg" />`);
-})
+//app.get('/', (req, res) => {
+//    res.send(`<h1>Todo Application</h1> <img src="image.jpg" />`);
+//})
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

@@ -1,3 +1,0 @@
-kubectl create deployment todo --image=lauriil12/devopswithkubernetes:todo0.1
-kubectl get pods
-kubectl logs -f todo-5b5c987487-tzqss
