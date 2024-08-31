@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-output
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: log-output
+  template:
+    metadata:
+      labels:
+        app: log-output
+    spec:
+      volumes:
+        - name: shared-log
+          emptyDir: {}
+      containers:
+        - name: log-output-reader
+          image: lauriil12/devopswithkubernetes:log-output-reader2.01
+          volumeMounts:
+            - name: shared-log
+              mountPath: /usr/src/app/logs
+          env:
+            - name: PINGPONGPORT
+              value: "2345"
+        - name: log-output-writer
+          image: lauriil12/devopswithkubernetes:log-output-writer1.10
+          volumeMounts:
+            - name: shared-log
+              mountPath: /usr/src/app/logs
