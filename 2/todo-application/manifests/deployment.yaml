@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todo
+  template:
+    metadata:
+      labels:
+        app: todo
+    spec:
+      volumes:
+        - name: todo-volume
+          persistentVolumeClaim:
+            claimName: todo-claim
+      containers:
+        - name: todo
+          image: lauriil12/devopswithkubernetes:todo1.13
+          volumeMounts:
+            - name: todo-volume
+              mountPath: /usr/src/app/images
+          env:
+            - name: PORT
+              value: "3001"
+            - name: IMAGEURL
+              value: "https://picsum.photos/1200"
+            - name: POLLINTERVAL
+              value: "3600000"
