@@ -1,16 +1,12 @@
-import { useState } from 'react'
-
-const todoses = [
-  { id: 1, text: 'Learn React' },
-  { id: 2, text: 'Learn Firebase' },
-  { id: 3, text: 'Build a Todo App' },
-]
+/* eslint-disable react/prop-types */
+import React, { useEffect, useState } from 'react'
+import todoService from './services/todos'
 
 const TodoList = ({ todos }) => {
   return (
     <ul>
       {todos.map(todo => (
-        <li key={todo.id}>{todo.text}</li>
+        <li key={todo.id}>{todo.title} {todo.completed}</li>
       ))}
     </ul>
   )
@@ -18,11 +14,20 @@ const TodoList = ({ todos }) => {
 
 const App = () => {
   const [todo, setTodo] = useState('')
-  const [todos, setTodos] = useState(todoses)
+  const [todos, setTodos] = useState([])
+
+  useEffect(() => {
+    todoService.getAll().then(todos => {
+      setTodos(todos)
+    })
+  }, [])
 
   const addTodo = (event) => {
     event.preventDefault()
-    setTodos([...todos, { id: todos.length + 1, text: event.target[0].value }])
+    const todo = { id: todos.length + 1, title: event.target[0].value, completed: false }
+    todoService.addTodo(todo).then(todo => {
+      setTodos([...todos, todo])
+    })
     setTodo('')
   }
   
