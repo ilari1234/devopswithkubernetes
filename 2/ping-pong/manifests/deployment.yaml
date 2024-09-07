@@ -15,4 +15,16 @@ spec:
     spec:
       containers:
         - name: ping-pong
-          image: lauriil12/devopswithkubernetes:ping-pong2.01
+          image: lauriil12/devopswithkubernetes:ping-pong2.07.1.0
+          env:
+            - name: POSTGRES_HOST
+              value: postgres-svc
+            - name: POSTGRES_USER
+              value: postgres 
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_DB
+              value: postgres
