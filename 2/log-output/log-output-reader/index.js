@@ -10,6 +10,7 @@ const timestampfilePath = path.join(dirPath, 'timestamps.log')
 const pingfilePath = path.join(dirPath, 'pingpong.log')
 const pingPongSCV = process.env.PINGPONGSVC || 'ping-pong-svc'
 const pingPongPORT = process.env.PINGPONGPORT || 2345
+const configFilePath = '/etc/config/information.txt'
 
 app.get('/status', (req, res) => {
   res.send(`{ "status": "OK", "timestamp": "${new Date().toISOString()}" }`)
@@ -31,12 +32,20 @@ app.get('/log', async (req, res) => {
     const timestamp = new Date().toISOString()
     const data = await getPongs()
     const hash = crypto.createHash('sha256').update(data).digest('hex')
-    res.send(`<p>${timestamp}: ${hash}</p><pre>${data}</pre>`)
+    const configData = await getConfigFromFile()
+    res.send(
+      `<pre>file content: ${configData}</pre>
+      <pre>env variable: MESSAGE=${process.env.MESSAGE}</pre>
+      <pre>${timestamp}: ${hash}</pre>
+      <pre>${data}</pre>`
+    )
   } catch (err) {
     console.error(`Error reading file: ${err}`)
     return res.status(500).send('Error reading file')
   }
 })
+
+const getConfigFromFile = () => fs.promises.readFile(configFilePath, 'utf8')
 
 const getPongsFromFile  = () =>  fs.promises.readFile(pingfilePath, 'utf8')
 
