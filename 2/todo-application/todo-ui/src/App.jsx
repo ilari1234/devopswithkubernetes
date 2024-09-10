@@ -3,6 +3,10 @@ import React, { useEffect, useState } from 'react'
 import todoService from './services/todos'
 
 const TodoList = ({ todos }) => {
+  if (!todos || todos.length === 0) {
+    return;
+  }
+
   return (
     <ul>
       {todos.map(todo => (
@@ -22,12 +26,11 @@ const App = () => {
     })
   }, [])
 
-  const addTodo = (event) => {
+  const addTodo = async (event) => {
     event.preventDefault()
-    const todo = { id: todos.length + 1, title: event.target[0].value, completed: false }
-    todoService.addTodo(todo).then(todo => {
-      setTodos([...todos, todo])
-    })
+    const todoObject = { title: event.target[0].value, completed: false }
+    const todo = await todoService.addTodo(todoObject)
+    setTodos(todos.concat(todo))
     setTodo('')
   }
   

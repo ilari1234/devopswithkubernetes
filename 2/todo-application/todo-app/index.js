@@ -47,11 +47,6 @@ const downloadImage = async (url, outputPath) => {
 }
 
 
-
-//app.get('/', (req, res) => {
-//    res.send(`<h1>Todo Application</h1> <img src="image.jpg" />`);
-//})
-
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
   console.log(`Server started in port ${PORT}`)

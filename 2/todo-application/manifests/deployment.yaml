@@ -19,7 +19,7 @@ spec:
             claimName: todo-claim
       containers:
         - name: todo-app
-          image: lauriil12/devopswithkubernetes:todo-app2.02
+          image: lauriil12/devopswithkubernetes:todo-app2.08.4
           volumeMounts:
             - name: todo-volume
               mountPath: /usr/src/app/images
@@ -31,7 +31,27 @@ spec:
             - name: POLLINTERVAL
               value: "3600000"
         - name: todo-backend
-          image: lauriil12/devopswithkubernetes:todo-backend2.02
+          image: lauriil12/devopswithkubernetes:todo-backend2.08.5
           env:
             - name: PORT
               value: "3001"
+            - name: POSTGRES_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: database-config
+                  key: POSTGRES_HOST
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: database-config
+                  key: POSTGRES_USER
+            - name: POSTGRES_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: database-config
+                  key: POSTGRES_DATABASE
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
