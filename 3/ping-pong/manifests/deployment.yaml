@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: ping-pong
-          image: lauriil12/devopswithkubernetes:ping-pong2.07.1.0
+          image: lauriil12/devopswithkubernetes:ping-pong2.07.2
           env:
             - name: POSTGRES_HOST
               valueFrom:

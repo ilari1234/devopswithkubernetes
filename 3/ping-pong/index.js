@@ -21,17 +21,6 @@ app.get('/pongs', async (req, res) => {
   res.send(`Ping / Pongs: ${counter}`)
 })
 
-const initCounter = async () => {
-  try {
-    const result = await pool.query('SELECT * FROM pingpong')
-    if (result.rows.length === 0) {
-      await pool.query('INSERT INTO pingpong (count) VALUES (0)')
-    }
-  } catch (error) {
-    console.error(`Error initializing ping: ${error.stack}`)
-  }
-}
-
 const incrementPing = async () => {
   try {
     await pool.query('UPDATE pingpong SET count = count + 1 WHERE id = 1')
@@ -48,8 +37,6 @@ const loadPing = async () => {
     console.error(`Error loading ping: ${error.stack}`)
   }
 }
-
-initCounter()
 
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
