@@ -12,3 +12,6 @@ data:
       id SERIAL PRIMARY KEY,
       count INT
     );
+    INSERT INTO pingpong (count)
+    SELECT 0
+    WHERE NOT EXISTS (SELECT 1 FROM pingpong);
