@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-output
+  namespace: exercises
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: log-output
+  template:
+    metadata:
+      labels:
+        app: log-output
+    spec:
+      volumes:
+        - name: shared-log
+          emptyDir: {}
+        - name: config-volume
+          configMap:
+            name: log-output-config # Provide the name of the ConfigMap containing the files you want to add to the container
+      containers:
+        - name: log-output-reader
+          image: lauriil12/devopswithkubernetes:log-output-reader2.06
+          volumeMounts:
+            - name: shared-log
+              mountPath: /usr/src/app/logs
+            - name: config-volume
+              mountPath: /etc/config
+          env:
+            - name: PINGPONGPORT
+              value: "2345"
+            - name: MESSAGE
+              valueFrom:
+                configMapKeyRef:
+                  name: log-output-config
+                  key: MESSAGE
+        - name: log-output-writer
+          image: lauriil12/devopswithkubernetes:log-output-writer1.10
+          volumeMounts:
+            - name: shared-log
+              mountPath: /usr/src/app/logs
