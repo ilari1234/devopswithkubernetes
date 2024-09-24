@@ -21,6 +21,10 @@ app.get('/pongs', async (req, res) => {
   res.send(`Ping / Pongs: ${counter}`)
 })
 
+app.get('/', async (req, res) => {
+  res.send('Ping Pong Service')
+})
+
 const incrementPing = async () => {
   try {
     await pool.query('UPDATE pingpong SET count = count + 1 WHERE id = 1')

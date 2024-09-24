@@ -7,7 +7,6 @@ const crypto = require('crypto')
 
 const dirPath = path.join(__dirname, 'logs')
 const timestampfilePath = path.join(dirPath, 'timestamps.log')
-const pingfilePath = path.join(dirPath, 'pingpong.log')
 const pingPongSCV = process.env.PINGPONGSVC || 'ping-pong-svc'
 const pingPongPORT = process.env.PINGPONGPORT || 2345
 const configFilePath = '/etc/config/information.txt'
@@ -45,9 +44,11 @@ app.get('/log', async (req, res) => {
   }
 })
 
-const getConfigFromFile = () => fs.promises.readFile(configFilePath, 'utf8')
+app.get('/', async (req, res) => {
+  return res.send('Log output reader')
+})
 
-const getPongsFromFile  = () =>  fs.promises.readFile(pingfilePath, 'utf8')
+const getConfigFromFile = () => fs.promises.readFile(configFilePath, 'utf8')
 
 const getPongs = async () => {
   try {

@@ -42,7 +42,7 @@ spec:
             name: database-config
   volumeClaimTemplates:
     - metadata:
-        name: postgres-data-storage
+        name: postgres-data-storage #storage class name removed for gcp
       spec:
         accessModes: ["ReadWriteOnce"]
         resources:

@@ -18,10 +18,10 @@ spec:
           emptyDir: {}
         - name: config-volume
           configMap:
-            name: log-output-config # Provide the name of the ConfigMap containing the files you want to add to the container
+            name: log-output-config
       containers:
         - name: log-output-reader
-          image: lauriil12/devopswithkubernetes:log-output-reader2.06
+          image: lauriil12/devopswithkubernetes:log-output-reader3.02
           volumeMounts:
             - name: shared-log
               mountPath: /usr/src/app/logs
