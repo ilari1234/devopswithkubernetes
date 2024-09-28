@@ -6,7 +6,6 @@ resources:
   - manifests/deployment.yaml
   - manifests/ingress.yaml
   - manifests/persistentvolumeclaim.yaml
-  - manifests/secret.yaml
   - manifests/statefulset.yaml
   - manifests/todo-app-service.yaml
   - manifests/todo-backend-service.yaml
