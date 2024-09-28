@@ -54,7 +54,7 @@ jobs:
 
       - name: Create Postgres secret
         run: |-
-          kubectl create secret generic postgres-secret --from-literal=POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+          kubectl create secret generic postgres-secret --from-literal=POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Deploy
         run: |-
