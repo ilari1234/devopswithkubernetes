@@ -16,7 +16,7 @@ env:
 
 jobs:
   build-publish-deploy:
-    name: Build, Publish and Deploy
+    name: Build, Publish and Deploy TODO backend
     runs-on: ubuntu-latest
     environment: gcp
 
@@ -45,6 +45,7 @@ jobs:
 
       - name: Build and publish
         run: |-
+          cd 3/todo-application/todo-backend
           docker build --tag "gcr.io/$PROJECT_ID/$IMAGE:$BRANCH-$GITHUB_SHA" .
           docker push "gcr.io/$PROJECT_ID/$IMAGE:$BRANCH-$GITHUB_SHA"
 
