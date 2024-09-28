@@ -38,6 +38,10 @@ const saveTodo = async (todo) => {
   return res.rows[0]
 }
 
+app.get('/', (req, res) => {
+  res.send('OK')
+})
+
 app.get('/todos', async (req, res) => {
   const todos = await loadTodos()
   res.json(todos)

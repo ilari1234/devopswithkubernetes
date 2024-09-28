@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: todo
-  namespace: todo-application
 spec:
   replicas: 1
   selector:
@@ -19,7 +18,7 @@ spec:
             claimName: todo-claim
       containers:
         - name: todo-app
-          image: lauriil12/devopswithkubernetes:todo-app2.08.4
+          image: todo-app
           volumeMounts:
             - name: todo-volume
               mountPath: /usr/src/app/images
@@ -31,7 +30,7 @@ spec:
             - name: POLLINTERVAL
               value: "3600000"
         - name: todo-backend
-          image: lauriil12/devopswithkubernetes:todo-backend2.10.1
+          image: todo-backend
           env:
             - name: PORT
               value: "3001"

@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - manifests/cronjob.yaml
+  - manifests/databse-config.yaml
+  - manifests/deployment.yaml
+  - manifests/ingress.yaml
+  - manifests/persistentvolumeclaim.yaml
+  - manifests/secret.yaml
+  - manifests/statefulset.yaml
+  - manifests/todo-app-service.yaml
+  - manifests/todo-backend-service.yaml
+images:
+  - name: todo-app
+    newName: lauriil12/devopswithkubernetes:todo-app2.08.4
+  - name: todo-backend
+    newName: lauriil12/devopswithkubernetes:todo-backend3.03
+  - name: todo-scheduler
+    newName: lauriil12/devopswithkubernetes:todo-scheduler2.09.5
