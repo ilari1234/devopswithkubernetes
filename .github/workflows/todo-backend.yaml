@@ -54,6 +54,7 @@ jobs:
 
       - name: Deploy
         run: |-
+          cd 3/todo-application
           kustomize edit set image todo-backend=gcr.io/$PROJECT_ID/$IMAGE:$BRANCH-$GITHUB_SHA
           kustomize build . | kubectl apply -f -
           kubectl rollout status deployment $DEPLOYMENT
