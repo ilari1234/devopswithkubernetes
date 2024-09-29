@@ -52,10 +52,6 @@ jobs:
       - name: Set up Kustomize
         uses: imranismail/setup-kustomize@v2
 
-      - name: Create Postgres secret
-        run: |-
-          kubectl create secret generic postgres-secret --from-literal=POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} --dry-run=client -o yaml | kubectl apply -f -
-
       - name: Deploy
         run: |-
           cd 3/todo-application
@@ -64,6 +60,7 @@ jobs:
             kubectl config set-context --current --namespace=$BRANCH
             kustomize edit set namespace $BRANCH
           fi
+          kubectl create secret generic postgres-secret --from-literal=POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} --dry-run=client -o yaml | kubectl apply -f -
           kustomize edit set image todo-backend=gcr.io/$PROJECT_ID/$IMAGE:$BRANCH-$GITHUB_SHA
           kustomize build . | kubectl apply -f -
           kubectl rollout status deployment $DEPLOYMENT
