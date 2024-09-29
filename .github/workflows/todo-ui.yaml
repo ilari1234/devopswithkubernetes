@@ -45,6 +45,8 @@ jobs:
 
       - name: Build and publish
         run: |-
+          cd 3/todo-application/todo-ui
+          npm install
           cd 3/todo-application/todo-app
           npm run build:ui
           docker build --tag "gcr.io/$PROJECT_ID/$IMAGE:$BRANCH-$GITHUB_SHA" .
