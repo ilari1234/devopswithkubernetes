@@ -43,7 +43,7 @@ spec:
     - metadata:
         name: postgres-data-storage
       spec:
-        accessModes: ["ReadWriteOnce"]
+        accessModes: ["ReadWriteMany"]
         resources:
           requests:
             storage: 100Mi
