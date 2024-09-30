@@ -55,6 +55,11 @@ jobs:
       - name: Deploy
         run: |-
           cd 3/todo-application
+          if [ "$BRANCH" != "main" ]; then
+            kubectl create namespace $BRANCH || true
+            kubectl config set-context --current --namespace=$BRANCH
+            kustomize edit set namespace $BRANCH
+          fi
           kustomize edit set image todo-app=gcr.io/$PROJECT_ID/$IMAGE:$BRANCH-$GITHUB_SHA
           kustomize build . | kubectl apply -f -
           kubectl rollout status deployment $DEPLOYMENT
