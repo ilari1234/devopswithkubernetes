@@ -1,0 +1,88 @@
+name: Release all manually
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch name'
+        required: true
+        default: 'main'
+
+env:
+  PROJECT_ID: ${{ secrets.GKE_PROJECT }}
+  GKE_CLUSTER: dwk-cluster
+  GKE_ZONE: europe-north1-b
+  IMAGE_BACKEND: todo-backend
+  IMAGE_APP: todo-app
+  IMAGE_SCHEDULER: todo-scheduler
+  DEPLOYMENT: todo
+  BRANCH: ${{ github.ref_name }}
+
+jobs:
+  build-publish-deploy:
+    name: Build, Publish and Deploy TODO backend
+    runs-on: ubuntu-latest
+    environment: gcp
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GKE_SA_KEY }}'
+
+      - name: 'Set up Cloud SDK'
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: 'Use gcloud CLI'
+        run: gcloud info
+
+      - run: gcloud --quiet auth configure-docker
+
+      - name: 'Get GKE credentials'
+        uses: 'google-github-actions/get-gke-credentials@v2'
+        with:
+          cluster_name: '${{ env.GKE_CLUSTER }}'
+          project_id: '${{ env.PROJECT_ID }}'
+          location: '${{ env.GKE_ZONE }}'
+
+      - name: Build and publish todo-backend
+        run: |-
+          cd 3/todo-application/todo-backend
+          docker build --tag "gcr.io/$PROJECT_ID/$IMAGE_BACKEND:$BRANCH-$GITHUB_SHA" .
+          docker push "gcr.io/$PROJECT_ID/$IMAGE_BACKEND:$BRANCH-$GITHUB_SHA"
+
+      - name: Build and publish todo-ui
+        run: |-
+          cd 3/todo-application/todo-ui
+          npm install
+          cd ../todo-app
+          npm run build:ui
+          docker build --tag "gcr.io/$PROJECT_ID/$IMAGE_APP:$BRANCH-$GITHUB_SHA" .
+          docker push "gcr.io/$PROJECT_ID/$IMAGE_APP:$BRANCH-$GITHUB_SHA"
+
+      - name: Build and publish todo-scheduler
+        run: |-
+          cd 3/todo-application/todo-scheduler
+          docker build --tag "gcr.io/$PROJECT_ID/$IMAGE_SCHEDULER:$BRANCH-$GITHUB_SHA" .
+          docker push "gcr.io/$PROJECT_ID/$IMAGE_SCHEDULER:$BRANCH-$GITHUB_SHA"
+
+      - name: Set up Kustomize
+        uses: imranismail/setup-kustomize@v2
+
+      - name: Deploy
+        run: |-
+          cd 3/todo-application
+          if [ "$BRANCH" != "main" ]; then
+            kubectl create namespace $BRANCH || true
+            kubectl config set-context --current --namespace=$BRANCH
+            kustomize edit set namespace $BRANCH
+          fi
+          kubectl create secret generic postgres-secret --from-literal=POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} --dry-run=client -o yaml | kubectl apply -f -
+          kustomize edit set image todo-backend=gcr.io/$PROJECT_ID/$IMAGE_BACKEND:$BRANCH-$GITHUB_SHA
+          kustomize edit set image todo-app=gcr.io/$PROJECT_ID/$IMAGE_APP:$BRANCH-$GITHUB_SHA
+          kustomize edit set image todo-scheduler=gcr.io/$PROJECT_ID/$IMAGE_SCHEDULER:$BRANCH-$GITHUB_SHA
+          kustomize build . | kubectl apply -f -
+          kubectl rollout status deployment $DEPLOYMENT
+          kubectl get services -o wide
