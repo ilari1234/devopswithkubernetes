@@ -35,8 +35,16 @@ spec:
                 configMapKeyRef:
                   name: log-output-config
                   key: MESSAGE
+          resources:
+            limits:
+              cpu: "50m"
+              memory: "100Mi"
         - name: log-output-writer
           image: lauriil12/devopswithkubernetes:log-output-writer1.10
           volumeMounts:
             - name: shared-log
               mountPath: /usr/src/app/logs
+          resources:
+            limits:
+              cpu: "50m"
+              memory: "100Mi"

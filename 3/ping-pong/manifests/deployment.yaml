@@ -8,6 +8,8 @@ spec:
   selector:
     matchLabels:
       app: ping-pong
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -37,3 +39,7 @@ spec:
                 configMapKeyRef:
                   name: database-config
                   key: POSTGRES_DATABASE
+          resources:
+            limits:
+              cpu: "50m"
+              memory: "100Mi"
