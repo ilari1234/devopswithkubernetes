@@ -7,6 +7,8 @@ spec:
   selector:
     matchLabels:
       app: todo
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -29,6 +31,10 @@ spec:
               value: "https://picsum.photos/1200"
             - name: POLLINTERVAL
               value: "3600000"
+          resources:
+            limits:
+              cpu: "50m"
+              memory: "100Mi"
         - name: todo-backend
           image: todo-backend
           env:
@@ -54,3 +60,7 @@ spec:
                 secretKeyRef:
                   name: postgres-secret
                   key: POSTGRES_PASSWORD
+          resources:
+            limits:
+              cpu: "50m"
+              memory: "50Mi"
