@@ -58,6 +58,6 @@ jobs:
             kustomize edit set namespace $BRANCH
           fi
           kubectl create secret generic todo-backup-secret --from-literal='dwk-bucket-credentials.json=${{ secrets.DWK_SA_PG_KEY }}' --from-literal=DWK_BUCKET=${{ secrets.DWK_BUCKET_NAME }} --from-literal=GKE_PROJECT=${{ secrets.GKE_PROJECT }} --dry-run=client -o yaml | kubectl apply -f -
-          kubectl apply -f todo-db-backup
+          kubectl apply -f manifests/todo-db-backup
           kubectl rollout status deployment $DEPLOYMENT
           kubectl get services -o wide
