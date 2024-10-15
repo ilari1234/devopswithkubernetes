@@ -1,0 +1,63 @@
+name: Release Todo DB backup
+
+on:
+  push:
+    paths:
+      - "3/todo-application/todo-db-backup/**"
+      - ".github/workflows/todo-db-backup.yaml"
+
+env:
+  PROJECT_ID: ${{ secrets.GKE_PROJECT }}
+  GKE_CLUSTER: dwk-cluster
+  GKE_ZONE: europe-north1-b
+  IMAGE: todo-db-backup
+  DEPLOYMENT: todo
+  BRANCH: ${{ github.ref_name }}
+
+jobs:
+  build-publish-deploy:
+    name: Build, Publish and Deploy TODO DB backup
+    runs-on: ubuntu-latest
+    environment: gcp
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: google-github-actions/auth@v2
+        with:
+          credentials_json: "${{ secrets.GKE_SA_KEY }}"
+
+      - name: "Set up Cloud SDK"
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: "Use gcloud CLI"
+        run: gcloud info
+
+      - run: gcloud --quiet auth configure-docker
+
+      - name: "Get GKE credentials"
+        uses: "google-github-actions/get-gke-credentials@v2"
+        with:
+          cluster_name: "${{ env.GKE_CLUSTER }}"
+          project_id: "${{ env.PROJECT_ID }}"
+          location: "${{ env.GKE_ZONE }}"
+
+      - name: Build and publish
+        run: |-
+          cd 3/todo-application/todo-db-backup
+          docker build --tag "gcr.io/$PROJECT_ID/$IMAGE:$BRANCH-$GITHUB_SHA" .
+          docker push "gcr.io/$PROJECT_ID/$IMAGE:$BRANCH-$GITHUB_SHA"
+
+      - name: Deploy
+        run: |-
+          cd 3/todo-application
+          if [ "$BRANCH" != "main" ]; then
+            kubectl create namespace $BRANCH || true
+            kubectl config set-context --current --namespace=$BRANCH
+            kustomize edit set namespace $BRANCH
+          fi
+          kubectl create secret generic todo-backup-secret --from-literal='dwk-bucket-credentials.json=${{ secrets.DWK_SA_PG_KEY }}' --from-literal=DWK_BUCKET=${{ secrets.DWK_BUCKET_NAME }} --from-literal=GKE_PROJECT=${{ secrets.GKE_PROJECT }} --dry-run=client -o yaml | kubectl apply -f -
+          kubectl apply -f todo-db-backup
+          kubectl rollout status deployment $DEPLOYMENT
+          kubectl get services -o wide
