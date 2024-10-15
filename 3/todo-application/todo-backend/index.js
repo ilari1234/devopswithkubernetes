@@ -52,6 +52,7 @@ app.post('/todos', async (req, res) => {
     return res.status(400).json({ error: 'Title length should be maximum 140 characters' })
   } else {
     const todo = await saveTodo(req.body)
+    console.log(todo)
     res.status(201).json(todo)
   }
 })
