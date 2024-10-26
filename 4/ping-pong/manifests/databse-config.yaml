@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: database-config
+  namespace: exercises
+data:
+  POSTGRES_HOST: "postgres-svc"
+  POSTGRES_USER: "postgres"
+  POSTGRES_DATABASE: "postgres"
+  init.sql: |
+    CREATE TABLE IF NOT EXISTS pingpong (
+      id SERIAL PRIMARY KEY,
+      count INT
+    );
+    INSERT INTO pingpong (count)
+    SELECT 0
+    WHERE NOT EXISTS (SELECT 1 FROM pingpong);
