@@ -47,6 +47,16 @@ app.get('/todos', async (req, res) => {
   res.json(todos)
 })
 
+app.get('/healthz', async (req, res) => {
+  try {
+    await pool.query('SELECT 1')
+    res.status(200).send('OK')
+  } catch (error) {
+    console.error(`Error connecting to database: ${error.stack}`)
+    res.status(503).send('Service unavailable')
+  }
+})
+
 app.post('/todos', async (req, res) => {
   if (req.body.title.length > 140) {
     return res.status(400).json({ error: 'Title length should be maximum 140 characters' })

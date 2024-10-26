@@ -7,13 +7,14 @@ resources:
   - manifests/deployment.yaml
   - manifests/ingress.yaml
   - manifests/persistentvolumeclaim.yaml
+  - manifests/secret.yaml
   - manifests/statefulset.yaml
   - manifests/todo-app-service.yaml
   - manifests/todo-backend-service.yaml
 images:
   - name: todo-app
-    newName: lauriil12/devopswithkubernetes:todo-app2.08.4
+    newName: lauriil12/devopswithkubernetes:todo-app4.02
   - name: todo-backend
-    newName: lauriil12/devopswithkubernetes:todo-backend3.03
+    newName: lauriil12/devopswithkubernetes:todo-backend4.02
   - name: todo-scheduler
     newName: lauriil12/devopswithkubernetes:todo-scheduler2.09.5
