@@ -17,7 +17,13 @@ spec:
     spec:
       containers:
         - name: ping-pong
-          image: lauriil12/devopswithkubernetes:ping-pong3.02
+          image: ping-pong
+          readinessProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            httpGet:
+              path: /healthz
+              port: 3000
           env:
             - name: POSTGRES_HOST
               valueFrom:

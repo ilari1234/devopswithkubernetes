@@ -48,6 +48,16 @@ app.get('/', async (req, res) => {
   return res.send('Log output reader')
 })
 
+app.get('/healthz', async (req, res) => {
+  try {
+    await getPongs()
+    res.status(200).send('OK')
+  } catch (err) {
+    console.error(`Error: ${err.message}`)
+    res.status(503).send('Service unavailable')
+  }
+})
+
 const getConfigFromFile = () => fs.promises.readFile(configFilePath, 'utf8')
 
 const getPongs = async () => {

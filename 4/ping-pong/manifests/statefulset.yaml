@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: postgres:alpine
+          image: postgres:16.4-alpine
           env:
             - name: POSTGRES_USER
               valueFrom:
@@ -42,9 +42,10 @@ spec:
             name: database-config
   volumeClaimTemplates:
     - metadata:
-        name: postgres-data-storage #storage class name removed for gcp
+        name: postgres-data-storage
       spec:
         accessModes: ["ReadWriteOnce"]
+        storageClassName: local-path  # This is not needed for gcp
         resources:
           requests:
             storage: 100Mi

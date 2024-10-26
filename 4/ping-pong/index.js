@@ -25,6 +25,15 @@ app.get('/', async (req, res) => {
   res.send('Ping Pong Service')
 })
 
+app.get('/healthz', async (req, res) => {
+  try {
+    await pool.query('SELECT 1');
+    res.status(200).send('OK');
+  } catch (error) {
+    res.status(503).send('Service unavailable');
+  }
+})
+
 const incrementPing = async () => {
   try {
     await pool.query('UPDATE pingpong SET count = count + 1 WHERE id = 1')

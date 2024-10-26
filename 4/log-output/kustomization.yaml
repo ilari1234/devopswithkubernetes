@@ -1,9 +1,13 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: default
+namespace: exercises
 resources:
   - manifests/config.yaml
   - manifests/deployment.yaml
   - manifests/ingress.yaml
   - manifests/service.yaml
-  
+images:
+  - name: log-output-reader
+    newName: lauriil12/devopswithkubernetes:log-output-reader4.01
+  - name: log-output-writer
+    newName: lauriil12/devopswithkubernetes:log-output-writer1.10

@@ -21,7 +21,13 @@ spec:
             name: log-output-config
       containers:
         - name: log-output-reader
-          image: lauriil12/devopswithkubernetes:log-output-reader3.02
+          image: log-output-reader
+          readinessProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            httpGet:
+              path: /healthz
+              port: 3000
           volumeMounts:
             - name: shared-log
               mountPath: /usr/src/app/logs
@@ -40,7 +46,7 @@ spec:
               cpu: "50m"
               memory: "100Mi"
         - name: log-output-writer
-          image: lauriil12/devopswithkubernetes:log-output-writer1.10
+          image: log-output-writer
           volumeMounts:
             - name: shared-log
               mountPath: /usr/src/app/logs
