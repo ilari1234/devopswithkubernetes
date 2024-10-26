@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todo
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: todo
+    spec:
+      volumes:
+        - name: todo-volume
+          persistentVolumeClaim:
+            claimName: todo-claim
+      containers:
+        - name: todo-app
+          image: todo-app
+          volumeMounts:
+            - name: todo-volume
+              mountPath: /usr/src/app/images
+          env:
+            - name: PORT
+              value: "3000"
+            - name: IMAGEURL
+              value: "https://picsum.photos/1200"
+            - name: POLLINTERVAL
+              value: "3600000"
+          resources:
+            limits:
+              cpu: "50m"
+              memory: "100Mi"
+        - name: todo-backend
+          image: todo-backend
+          env:
+            - name: PORT
+              value: "3001"
+            - name: POSTGRES_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: database-config
+                  key: POSTGRES_HOST
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: database-config
+                  key: POSTGRES_USER
+            - name: POSTGRES_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: database-config
+                  key: POSTGRES_DATABASE
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
+          resources:
+            limits:
+              cpu: "50m"
+              memory: "50Mi"

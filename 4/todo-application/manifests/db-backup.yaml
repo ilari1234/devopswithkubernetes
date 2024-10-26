@@ -1,0 +1,56 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: todo-db-backup
+spec:
+  schedule: "0 0 * * *"
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          volumes:
+            - name: secret-volume
+              secret:
+                secretName: todo-backup-secret
+          containers:
+          - name: todo-db-backup
+            image: lauriil12/devopswithkubernetes:todo-db-backup3.07.3
+            volumeMounts:
+            - name: secret-volume
+              mountPath: /etc/secret-volume/dwk-bucket-credentials.json
+              readOnly: true
+              subPath: dwk-bucket-credentials.json
+            env:
+            - name: POSTGRES_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: database-config
+                  key: POSTGRES_HOST
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: database-config
+                  key: POSTGRES_USER
+            - name: POSTGRES_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: database-config
+                  key: POSTGRES_DATABASE
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
+            - name: DWK_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  name: todo-backup-secret
+                  key: DWK_BUCKET
+            - name: GKE_PROJECT
+              valueFrom:
+                secretKeyRef:
+                  name: todo-backup-secret
+                  key: GKE_PROJECT
+          restartPolicy: Never
