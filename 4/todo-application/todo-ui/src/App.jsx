@@ -2,17 +2,28 @@
 import React, { useEffect, useState } from 'react'
 import todoService from './services/todos'
 
-const TodoList = ({ todos }) => {
+const Todo = ({ todo, updateStatus }) => {
+  return (
+    <tr>
+      <td>{todo.title}</td>
+      <td>{todo.done ? 'Done' : 'Not done'} </td>
+      <td><button onClick={() => updateStatus(todo)}>Change status</button></td>
+    </tr>
+  )
+}
+
+const TodoList = ({ todos, updateStatus }) => {
   if (!todos || todos.length === 0) {
     return;
   }
-
   return (
-    <ul>
-      {todos.map(todo => (
-        <li key={todo.id}>{todo.title} {todo.completed}</li>
-      ))}
-    </ul>
+    <table>
+      <tbody>
+        {todos.map(todo => (
+          <Todo key={todo.id} todo={todo} updateStatus={updateStatus} />
+        ))}
+      </tbody>
+    </table>
   )
 }
 
@@ -28,10 +39,16 @@ const App = () => {
 
   const addTodo = async (event) => {
     event.preventDefault()
-    const todoObject = { title: event.target[0].value, completed: false }
+    const todoObject = { title: event.target[0].value, done: false }
     const todo = await todoService.addTodo(todoObject)
     setTodos(todos.concat(todo))
     setTodo('')
+  }
+
+  const updateStatus = async (todoObject) => {
+    const updatedTodo = { ...todoObject, done: !todoObject.done }
+    const returnedTodo = await todoService.updateTodo(updatedTodo.id, updatedTodo)
+    setTodos(todos.map(todo => todo.id !== returnedTodo.id ? todo : returnedTodo))
   }
   
   const handleTodoChange = (event) => {
@@ -53,7 +70,7 @@ const App = () => {
       />
       <button type="submit">Create TODO</button>
     </form>
-      <TodoList todos={todos} />
+      <TodoList todos={todos} updateStatus={updateStatus} />
     </div>
   )
 }

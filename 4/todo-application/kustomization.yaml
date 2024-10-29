@@ -14,8 +14,8 @@ resources:
   - manifests/todo-backend-service.yaml
 images:
   - name: todo-app
-    newName: lauriil12/devopswithkubernetes:todo-app4.02
+    newName: lauriil12/devopswithkubernetes:todo-app4.05.1
   - name: todo-backend
-    newName: lauriil12/devopswithkubernetes:todo-backend4.02
+    newName: lauriil12/devopswithkubernetes:todo-backend4.05
   - name: todo-scheduler
     newName: lauriil12/devopswithkubernetes:todo-scheduler2.09.5

@@ -10,5 +10,5 @@ data:
     CREATE TABLE IF NOT EXISTS todos (
       id SERIAL PRIMARY KEY,
       title VARCHAR(140) NOT NULL,
-      completed BOOLEAN NOT NULL DEFAULT false
+      done BOOLEAN NOT NULL DEFAULT false
     );

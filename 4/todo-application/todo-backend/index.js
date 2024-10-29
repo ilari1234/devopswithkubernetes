@@ -34,7 +34,12 @@ const loadTodos = async () => {
 }
 
 const saveTodo = async (todo) => {
-  const res = await pool.query('INSERT INTO todos (title, completed) VALUES ($1, $2) RETURNING *', [todo.title, todo.completed])
+  const res = await pool.query('INSERT INTO todos (title, done) VALUES ($1, $2) RETURNING *', [todo.title, todo.done])
+  return res.rows[0]
+}
+
+const updateTodo = async (id, todo) => {
+  const res = await pool.query('UPDATE todos SET title=$1, done=$2 WHERE id=$3 RETURNING *', [todo.title, todo.done, id])
   return res.rows[0]
 }
 
@@ -63,6 +68,15 @@ app.post('/todos', async (req, res) => {
   } else {
     const todo = await saveTodo(req.body)
     res.status(201).json(todo)
+  }
+})
+
+app.put('/todos/:id', async (req, res) => {
+  if (req.body.title.length > 140) {
+    return res.status(400).json({ error: 'Title length should be maximum 140 characters' })
+  } else {
+    const todo = await updateTodo(req.params.id, req.body)
+    res.json(todo)
   }
 })
 
