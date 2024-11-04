@@ -2,6 +2,7 @@ const express = require('express')
 const morgan = require('morgan')
 const app = express()
 const cors = require('cors')
+const { connect } = require('nats')
 
 const pg = require('pg')
 const { Pool } = pg
@@ -11,6 +12,17 @@ const pool = new Pool({
   password : process.env.POSTGRES_PASSWORD,
   database : process.env.POSTGRES_DB, }
 )
+const nats_url = process.env.NATS_URL || 'nats://my-nats.nats.svc.cluster.local:4222'
+
+let nc
+const startNats = async () => {
+  try {
+    nc = await connect({ servers: nats_url })
+    console.log('Connected to NATS server')
+  } catch (error) {
+    console.error('Failed to connect to NATS:', error)
+  }
+}
 
 morgan.token('postBody', (req) => {
   if (req.method==='POST') {
@@ -68,6 +80,12 @@ app.post('/todos', async (req, res) => {
   } else {
     const todo = await saveTodo(req.body)
     res.status(201).json(todo)
+
+    try {
+      nc.publish('addTodo.topic', 'Task was created: ' + JSON.stringify(todo))
+    } catch (error) {
+      console.error(`Error publishing message to NATS: ${error.stack}`)
+    }
   }
 })
 
@@ -77,8 +95,16 @@ app.put('/todos/:id', async (req, res) => {
   } else {
     const todo = await updateTodo(req.params.id, req.body)
     res.json(todo)
+
+    try {
+      nc.publish('addTodo.topic', 'Task was updated: ' + JSON.stringify(todo))
+    } catch (error) {
+      console.error(`Error publishing message to NATS: ${error.stack}`)
+    }
   }
 })
+
+startNats()
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
