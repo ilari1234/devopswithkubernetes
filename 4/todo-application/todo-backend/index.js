@@ -82,7 +82,7 @@ app.post('/todos', async (req, res) => {
     res.status(201).json(todo)
 
     try {
-      nc.publish('addTodo.topic', 'Task was created: ' + JSON.stringify(todo))
+      nc.publish('addTodo.topic', 'Task was created: ' + todo.title)
     } catch (error) {
       console.error(`Error publishing message to NATS: ${error.stack}`)
     }
@@ -97,7 +97,7 @@ app.put('/todos/:id', async (req, res) => {
     res.json(todo)
 
     try {
-      nc.publish('addTodo.topic', 'Task was updated: ' + JSON.stringify(todo))
+      nc.publish('addTodo.topic', 'Task was updated: ' + todo.title + ', done: ' + todo.done)
     } catch (error) {
       console.error(`Error publishing message to NATS: ${error.stack}`)
     }

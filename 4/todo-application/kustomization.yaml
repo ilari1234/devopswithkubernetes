@@ -16,6 +16,8 @@ images:
   - name: todo-app
     newName: lauriil12/devopswithkubernetes:todo-app4.05.1
   - name: todo-backend
-    newName: lauriil12/devopswithkubernetes:todo-backend4.05
+    newName: lauriil12/devopswithkubernetes:todo-backend4.06.1
   - name: todo-scheduler
     newName: lauriil12/devopswithkubernetes:todo-scheduler2.09.5
+  - name: broadcaster
+    newName: lauriil12/devopswithkubernetes:broadcaster4.06
