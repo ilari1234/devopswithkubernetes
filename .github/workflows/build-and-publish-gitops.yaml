@@ -23,7 +23,7 @@ jobs:
 
       - name: Build and publish ping-pong
         run: |-
-          docker build -f /4/ping-pong/Dockerfile --tag "lauriil12/devopswithkubernetes:ping-pong-$GITHUB_SHA" ./4/ping-pong/
+          docker build -f ./4/ping-pong/Dockerfile --tag "lauriil12/devopswithkubernetes:ping-pong-$GITHUB_SHA" ./4/ping-pong/
           docker push "lauriil12/devopswithkubernetes:ping-pong$GITHUB_SHA"
 
       - name: Set up Kustomize
