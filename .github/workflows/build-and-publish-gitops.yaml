@@ -23,14 +23,17 @@ jobs:
 
       - name: Build and publish ping-pong
         run: |-
-          docker build -f ./4/ping-pong/Dockerfile --tag "lauriil12/devopswithkubernetes:ping-pong-$GITHUB_SHA" ./4/ping-pong/
+          cd 4/ping-pong
+          docker build --tag "lauriil12/devopswithkubernetes:ping-pong-$GITHUB_SHA" .
           docker push "lauriil12/devopswithkubernetes:ping-pong-$GITHUB_SHA"
 
       - name: Set up Kustomize
         uses: imranismail/setup-kustomize@v2
 
       - name: Update image
-        run: kustomize edit set image ping-pong=lauriil12/devopswithkubernetes:ping-pong-$GITHUB_SHA
+        run: |-
+          cd 4/ping-pong
+          kustomize edit set image ping-pong=lauriil12/devopswithkubernetes:ping-pong-$GITHUB_SHA
 
       - name: commit kustomization.yaml to GitHub
         uses: EndBug/add-and-commit@v9
