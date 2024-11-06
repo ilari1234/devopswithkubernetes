@@ -4,7 +4,7 @@ namespace: exercises
 resources:
   - manifests/databse-config.yaml
   - manifests/deployment.yaml
-  - manifests/secret.yaml
+  - manifests/secret.enc.yaml
   - manifests/service.yaml
   - manifests/statefulset.yaml
 images:
